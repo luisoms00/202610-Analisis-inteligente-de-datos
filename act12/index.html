@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>MNIST Draw</title>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<style>
+body { font-family: Arial; text-align:center; }
+canvas { border:2px solid black; cursor:crosshair; }
+button { margin:10px; padding:10px 20px; }
+</style>
+</head>
+<body>
+
+<h2>Dibuja un número</h2>
+<canvas id="canvas" width="280" height="280"></canvas>
+<br>
+<button onclick="clearCanvas()">Limpiar</button>
+<button onclick="sendCanvas()">Predecir</button>
+
+<h3>Resultado: <span id="resultado">-</span></h3>
+
+<script>
+
+var canvas=document.getElementById("canvas");
+var ctx=canvas.getContext("2d");
+
+ctx.fillStyle="white";
+ctx.fillRect(0,0,canvas.width,canvas.height);
+
+var drawing=false;
+
+canvas.onmousedown=function(){drawing=true;}
+canvas.onmouseup=function(){drawing=false;ctx.beginPath();}
+
+canvas.onmousemove=function(e){
+ if(!drawing)return;
+ ctx.lineWidth=20;
+ ctx.lineCap="round";
+ ctx.strokeStyle="black";
+ ctx.lineTo(e.offsetX,e.offsetY);
+ ctx.stroke();
+ ctx.beginPath();
+ ctx.moveTo(e.offsetX,e.offsetY);
+}
+
+function clearCanvas(){
+ ctx.fillStyle="white";
+ ctx.fillRect(0,0,canvas.width,canvas.height);
+}
+
+function sendCanvas(){
+
+ var small=document.createElement("canvas");
+ small.width=28;
+ small.height=28;
+
+ var smallctx=small.getContext("2d");
+ smallctx.drawImage(canvas,0,0,28,28);
+
+ var pixels=[];
+
+ for(var x=0;x<28;x++){
+  for(var y=0;y<28;y++){
+   var imgData=smallctx.getImageData(y,x,1,1);
+   var data=imgData.data;
+   var r = data[0];
+var g = data[1];
+var b = data[2];
+
+var gray = (r + g + b) / 3;
+
+var color = (255 - gray) / 255;
+   color=(Math.round(color*100)/100).toFixed(2);
+   pixels.push(color);
+  }
+ }
+
+ $.post("http://localhost:8000",{pixeles:pixels.join(",")},function(response){
+  console.log("Resultado:",response);
+  document.getElementById("resultado").innerHTML=response;
+ });
+
+}
+
+</script>
+</body>
+</html>
