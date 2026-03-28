@@ -1,0 +1,18 @@
+gantt
+    title Migestor3 ERP Development Roadmap (2026)
+    dateFormat  YYYY-MM-DD
+    axisFormat  %b %d
+
+    section Planning
+    Phase 1: Initiation & Requirements  :active, p1, 2026-02-24, 14d
+
+    section Architecture
+    Phase 2: Env Setup & DB Design      :p2, after p1, 28d
+
+    section Development
+    Phase 3: Backend & SAT Integration  :p3, after p2, 63d
+    Phase 4: Frontend & UI/UX           :p4, after p3, 56d
+
+    section Finalization
+    Phase 5: Testing & Staff Training   :p5, after p4, 35d
+    Phase 6: Deployment & Handover      :p6, after p5, 51d
